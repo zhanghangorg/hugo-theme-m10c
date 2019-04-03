@@ -5,8 +5,18 @@
         <li class="posts-list-item">
           <a class="posts-list-item-title" href="{{ .Permalink }}">{{ .Title }}</a>
           <span class="posts-list-item-description">
-            {{ partial "icon.html" (dict "ctx" $ "name" "clock") }} {{ .ReadingTime }} min read -
-            {{ .PublishDate.Format "Jan 2, 2006" }}
+            {{ .PublishDate.Format "2006年01月02日 15:04" }}
+            &nbsp;&nbsp;
+            {{- with .Params.tags -}}
+                {{ partial "icon.html" (dict "ctx" $ "name" "tag") }}
+                {{ range . -}}
+                    {{- with $.Site.GetPage (printf "/%s/%s" "tags" . ) -}}
+                    <a class="tag" href="{{ .Permalink }}">{{ .Title }}</a>
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+            &nbsp;&nbsp;
+            {{ partial "icon.html" (dict "ctx" $ "name" "clock") }} {{ .ReadingTime }} min read
           </span>
         </li>
       {{ end }}
