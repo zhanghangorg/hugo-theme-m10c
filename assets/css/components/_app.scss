@@ -24,6 +24,20 @@
   }
 }
 
+.app-header .menu-list{
+    margin-top: 60px;
+    margin-bottom: 30px;
+}
+.app-header {
+    .menu-list {
+        li {
+            list-style: none;
+            margin-left: -36px;
+            margin-top: 12px;
+        }
+    }
+}
+
 @media (min-width: 940px) {
   .app-header {
     position: fixed;
