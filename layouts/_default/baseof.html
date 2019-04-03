@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} // {{ .Site.Title }}{{ end }}</title>
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo {{ .Hugo.Version }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,12 +10,30 @@
     <base href="{{ .Site.BaseURL }}" />
     {{ $style := resources.Get "css/main.scss" | resources.ExecuteAsTemplate "css/main.scss" . | resources.ToCSS | resources.Minify | resources.Fingerprint -}}
     <link rel="stylesheet" href="{{ $style.Permalink }}" />
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/monokai.min.css" rel="stylesheet" />
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
   </head>
   <body>
     <header class="app-header">
-      <a href="/"><img class="app-header-avatar" src="./avatar.jpg" /></a>
-      <h1>{{ .Site.Title }}</h1>
-      <p>{{ .Site.Params.description | default "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium." }}</p>
+      <a href="/"><img class="app-header-avatar" src="{{ index .Site.Params "avatar"}}" /></a>
+      <a href="/"><h1>{{ .Site.Title }}</h1></a>
+      <p>{{ index .Site.Params "slogan"}}</p>
+
+      <ul class="menu-list">
+            {{ $type := .Type }}
+            {{ $kind := .Kind }}
+            {{ $currentPage := . }}
+            {{ range .Site.Menus.main }}
+              <li class="menu-item
+                {{ if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }} is-active{{ end }}
+                {{ if and (eq .Identifier "tags") (eq $kind "taxonomy") }} is-active{{ end }}
+                {{ if and (eq .Identifier "home") (eq $type "post") }} is-active{{ end }}">
+                <a href="{{ .URL }}">{{ .Name }}</a>
+              </li>
+            {{ end }}
+          </ul>
+
       <div class="app-header-social">
         {{ range .Site.Params.social }}
           <a target="_blank" href="{{ .url }}">{{ partial "icon.html" (dict "ctx" $ "name" .name ) }}</a>
